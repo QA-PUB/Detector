@@ -1,0 +1,39 @@
+[
+    {
+        "additional_key": "bug",
+        "id": 2,
+        "string": "Happy Sunday!",
+        "number": 99,
+        "boolean": false,
+        "null": null,
+        "emptyObject": {},
+        "emptyArray": [],
+        "array": ["e", "f", "d"],
+        "arrayObject": [
+            {
+                "name": "tee"
+            },
+            {
+                "name": "coffee 1"
+            }
+        ]
+    },
+    {
+        "id": 1,
+        "string": "Hello Everyone",
+        "number": 123.1234,
+        "null": null,
+        "emptyObject": {},
+        "array": ["a", "b", "c"],
+        "arrayObject": [
+            {
+                "name": "iPad"
+            },
+            {
+                "name": "iPhone"
+            }
+        ],
+        "boolean": false,
+        "emptyArray": []
+    }
+]
