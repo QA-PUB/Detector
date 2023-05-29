@@ -64,8 +64,8 @@ Next After: ${JSON.stringify(Object.keys(nextAfterJSON).sort())}
 Error!!! The --${key}-- has different values
 Original Before: ${JSON.stringify(orinigalBeforeJSON)}
 Original After: ${JSON.stringify(originalAfterJSON)}
-Next Before [${key}]: ${nextBeforeJSON[key]}
-Next After [${key}]: ${nextAfterJSON[key]}
+Next Before [${key}]: ${JSON.stringify(nextBeforeJSON[key])}
+Next After [${key}]: ${JSON.stringify(nextAfterJSON[key])}   
 `);
         }
         // Null {} []
