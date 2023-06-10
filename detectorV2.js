@@ -6,7 +6,7 @@ function detectorV2(
   originalAfterJSON,
   nextBeforeJSON,
   nextAfterJSON,
-  generalKey
+  generalKeyArray
 ) {
   // Step 1: Validate both files have correct type of objects
   if (
@@ -90,7 +90,7 @@ Next After [${key}]: ${JSON.stringify(nextAfterJSON[key])}
           originalAfterJSON,
           nextBeforeJSON[key],
           nextAfterJSON[key],
-          generalKey
+          generalKeyArray
         ); // Call to detector
       } else console.log("NOT COVERED YET 1");
     }
@@ -138,30 +138,27 @@ After: ${JSON.stringify(nextAfterJSON.sort())}
               .map((item) => ["object"].includes(typeof item))
               .includes(false)
           ) {
-            // Return a list of available keys
-            if (
-              !generalKey ||
-              nextBeforeJSON
-                .sort()
-                .map((item) => Object.keys(item).includes(generalKey))
-                .includes(false)
-            ) {
-              console.log(`
-The provided general key - ${generalKey} - is not valid!!! 
-The list of available keys:
-${JSON.stringify(nextBeforeJSON.sort().map((item) => Object.keys(item)))}
-`);
-            }
-            // Compare all values for related general key
-            if (
-              JSON.stringify(
-                nextBeforeJSON.map((item) => item[generalKey]).sort()
-              ) !=
-              JSON.stringify(
-                nextAfterJSON.map((item) => item[generalKey]).sort()
-              )
-            )
-              console.log(`
+            // Work with the array of general keys
+            if (generalKeyArray && Array.isArray(generalKeyArray)) {
+              let flagIsGeneralKeyArrayValid = false;
+              for (let generalKey of generalKeyArray) {
+                if (
+                  !nextBeforeJSON
+                    .sort()
+                    .map((item) => Object.keys(item).includes(generalKey))
+                    .includes(false)
+                ) {
+                  flagIsGeneralKeyArrayValid = true;
+                  // Compare all values for related general key
+                  if (
+                    JSON.stringify(
+                      nextBeforeJSON.map((item) => item[generalKey]).sort()
+                    ) !=
+                    JSON.stringify(
+                      nextAfterJSON.map((item) => item[generalKey]).sort()
+                    )
+                  )
+                    console.log(`
 Error!!! The arrays have different values for general key - ${generalKey}
 Original Before: ${JSON.stringify(orinigalBeforeJSON)}
 Original After: ${JSON.stringify(originalAfterJSON)}
@@ -170,21 +167,41 @@ Next After: ${JSON.stringify(nextAfterJSON)}
 Before: ${nextBeforeJSON.map((item) => item[generalKey]).sort()}
 After: ${nextAfterJSON.map((item) => item[generalKey]).sort()}
 `);
-            for (let i of nextBeforeJSON.sort()) {
-              for (let j of nextAfterJSON.sort()) {
-                if (
-                  Object.keys(i).includes(generalKey) &&
-                  i[generalKey] == j[generalKey]
-                ) {
-                  detectorV2(
-                    orinigalBeforeJSON,
-                    originalAfterJSON,
-                    i,
-                    j,
-                    generalKey
-                  ); // Call to detector
+                  for (let i of nextBeforeJSON.sort()) {
+                    for (let j of nextAfterJSON.sort()) {
+                      if (
+                        Object.keys(i).includes(generalKey) &&
+                        i[generalKey] == j[generalKey]
+                      ) {
+                        detectorV2(
+                          orinigalBeforeJSON,
+                          originalAfterJSON,
+                          i,
+                          j,
+                          generalKeyArray
+                        ); // Call to detector
+                      }
+                    }
+                  }
+                  break;
                 }
               }
+              // No one of all general keys is useful
+              if (!flagIsGeneralKeyArrayValid) {
+                console.log(`
+The provided array of general keys is not valid or it is not an array
+Array of general keys: ${JSON.stringify(generalKeyArray)}
+The list of available keys:
+${JSON.stringify(nextBeforeJSON.sort().map((item) => Object.keys(item)))}
+`);
+              }
+            } else {
+              console.log(`
+The provided array of general keys is not valid or it is not an array
+Array of general keys: ${JSON.stringify(generalKeyArray)}
+The list of available keys:
+${JSON.stringify(nextBeforeJSON.sort().map((item) => Object.keys(item)))}
+`);
             }
           } else {
             console.log("NOT COVERED YET 2");
@@ -203,4 +220,4 @@ Next After: ${JSON.stringify(nextAfterJSON)}
   }
 }
 
-detectorV2(beforeChanges, afterChanges, beforeChanges, afterChanges, undefined);
+detectorV2(beforeChanges, afterChanges, beforeChanges, afterChanges, ["id", "name"]);
